@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+name: FL-07 Privacy, devices and closure
+# Generated from the wireframes (stories US-004, US-030, US-031).
+---
+- launchApp:
+    clearState: true
+# SCR-03 Home
+- assertVisible: "Home"
+- tapOn: "More: Settings and help"
+# SCR-10 More and settings
+- assertVisible: "More"
+- tapOn: "Devices"
+# SCR-11 Privacy and devices
+- assertVisible: "Privacy and devices"

@@ -1,0 +1,20 @@
+appId: ${APP_ID}
+name: FL-08 Advise a client and trade
+# Generated from the wireframes (stories US-023, US-024, US-025).
+---
+- launchApp:
+    clearState: true
+# SCR-01 Sign-in
+- assertVisible: "Welcome back, Amara"
+- tapOn: "Sign in with fingerprint or face"
+# SCR-02 Verify (MFA)
+- assertVisible: "Enter your code"
+- tapOn: "Continue as Wealth Manager"
+# SCR-13 Client list
+- assertVisible: "Clients"
+- tapOn: "Grace Mensah, $210,000"
+# SCR-14 Client detail
+- assertVisible: "Grace Mensah"
+- tapOn: "New trade"
+# SCR-15 Trade
+- assertVisible: "New trade"

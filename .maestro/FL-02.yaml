@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+name: FL-02 Check accounts, cards and total wealth
+# Generated from the wireframes (stories US-005, US-006, US-007, US-008, US-009, US-010, US-026, US-036).
+---
+- launchApp:
+    clearState: true
+# SCR-03 Home
+- assertVisible: "Home"
+- tapOn: "Money: Accounts and Cards"
+# SCR-04 Accounts and Cards
+- assertVisible: "Money"
+- tapOn: "Wealth and portfolio overview"
+# SCR-05 Wealth overview
+- assertVisible: "Wealth overview"

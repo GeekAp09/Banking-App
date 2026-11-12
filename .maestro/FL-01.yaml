@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+name: FL-01 Sign in with biometrics and MFA
+# Generated from the wireframes (stories US-001, US-002, US-003, US-027).
+---
+- launchApp:
+    clearState: true
+# SCR-01 Sign-in
+- assertVisible: "Welcome back, Amara"
+- tapOn: "Sign in with fingerprint or face"
+# SCR-02 Verify (MFA)
+- assertVisible: "Enter your code"
+- tapOn: "Verify"
+# SCR-03 Home
+- assertVisible: "Home"

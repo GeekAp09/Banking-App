@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Banking</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_money">Money</string>
+    <string name="nav_pay">Pay</string>
+    <string name="nav_coach">Coach</string>
+    <string name="nav_more">More</string>
+    <string name="demo_hint">Demo sign-in (local, no real SMS or email is sent): customer Amara Eze +1 555 010 4521, code 123456. Wealth Manager Marcus Bell +1 555 010 7788 via Continue as Wealth Manager, code 123456.</string>
+    <string name="go_back">Go back</string>
+</resources>

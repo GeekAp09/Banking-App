@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+name: FL-04 Pay a friend by QR or contact
+# Generated from the wireframes (stories US-015, US-016, US-017, US-018, US-032).
+---
+- launchApp:
+    clearState: true
+# SCR-03 Home
+- assertVisible: "Home"
+- tapOn: "Pay: Scan or send"
+# SCR-07 Pay
+- assertVisible: "Pay"
+- tapOn: "Scan QR code"
+# SCR-08 Confirm and receipt
+- assertVisible: "Confirm transfer"

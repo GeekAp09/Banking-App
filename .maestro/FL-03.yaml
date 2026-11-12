@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+name: FL-03 Insights, categories and saving rounds
+# Generated from the wireframes (stories US-011, US-012, US-013).
+---
+- launchApp:
+    clearState: true
+# SCR-03 Home
+- assertVisible: "Home"
+- tapOn: "Coach: Insights and savings"
+# SCR-06 Coach
+- assertVisible: "Coach"

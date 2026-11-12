@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+name: FL-06 Turn on Easy Mode and notifications
+# Generated from the wireframes (stories US-021, US-022, US-014, US-029).
+---
+- launchApp:
+    clearState: true
+# SCR-03 Home
+- assertVisible: "Home"
+- tapOn: "More: Settings and help"
+# SCR-10 More and settings
+- assertVisible: "More"
+- tapOn: "Help and support"
+# SCR-12 Help and support
+- assertVisible: "Help"

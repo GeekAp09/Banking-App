@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+name: FL-05 Store and open a vault document
+# Generated from the wireframes (stories US-019, US-020).
+---
+- launchApp:
+    clearState: true
+# SCR-03 Home
+- assertVisible: "Home"
+- tapOn: "Vault: Documents"
+# SCR-09 Vault
+- assertVisible: "Vault"
