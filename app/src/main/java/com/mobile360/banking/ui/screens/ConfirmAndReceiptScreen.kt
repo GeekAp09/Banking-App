@@ -128,10 +128,10 @@ fun ConfirmAndReceiptScreen(
                             }
                         }
                         if (s.editable && s.receipt == null) {
-                            OutlinedTextField(s.name, viewModel::setName, Modifier.fillMaxWidth(), label = { Text("Recipient name") }, singleLine = true)
+                            OutlinedTextField(s.name, viewModel::setName, Modifier.fillMaxWidth(), label = { Text("Recipient name") }, singleLine = true, isError = s.editable && s.nameError != null, supportingText = { if (s.editable) s.nameError?.let { Text(it) } })
                             OutlinedTextField(
                                 s.phone, viewModel::setPhone, Modifier.fillMaxWidth(), label = { Text("Recipient phone") }, singleLine = true,
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), isError = s.editable && s.phoneError != null, supportingText = { if (s.editable) s.phoneError?.let { Text(it) } }
                             )
                         }
                     }
@@ -147,7 +147,7 @@ fun ConfirmAndReceiptScreen(
                                 prefix = { Text("$", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = AppColors.primary) },
                                 suffix = { Text("USD", fontSize = 14.sp, color = AppColors.secondary) },
                                 textStyle = androidx.compose.ui.text.TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), isError = s.amountError != null, supportingText = { s.amountError?.let { Text(it) } }
                             )
                             Surface(shape = CircleShape, color = Color(0xFFF0F4F9), modifier = Modifier.padding(vertical = 8.dp)) {
                                 Row(Modifier.padding(horizontal = 12.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {

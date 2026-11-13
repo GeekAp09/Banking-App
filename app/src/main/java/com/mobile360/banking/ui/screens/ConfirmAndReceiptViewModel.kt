@@ -33,6 +33,17 @@ data class ConfirmUiState(
     val overPerTransfer get() = amountCents > Limits.PER_TRANSFER_CENTS
     val initials get() = name.split(" ").mapNotNull { it.firstOrNull() }.take(2).joinToString("").ifBlank { "?" }
     val masked get() = phone.filter { it.isDigit() }.takeLast(4).let { if (it.isEmpty()) "" else "•••• $it" }
+
+    // CR-011: live per-field errors, shown while typing
+    val nameError: String? get() = if (name.isBlank()) "Enter the recipient's name." else null
+    val phoneError: String? get() =
+        if (phone.filter { it.isDigit() }.length < 7) "Enter a valid recipient phone number." else null
+    val amountError: String? get() = when {
+        amountText.isBlank() -> null
+        parseCents(amountText) <= 0L -> "Enter an amount greater than \$0.00."
+        overPerTransfer -> "Over the ${Money.formatWhole(Limits.PER_TRANSFER_CENTS)} per-transfer limit"
+        else -> null
+    }
 }
 
 fun parseCents(text: String): Long = try {

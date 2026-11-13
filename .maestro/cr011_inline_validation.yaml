@@ -1,0 +1,21 @@
+appId: com.mobile360.banking
+---
+- launchApp
+- tapOn: "Sign in with fingerprint or face"
+- tapOn: "Enter your code"
+- inputText: "123456"
+- tapOn: "Verify"
+- tapOn: "Pay"
+- tapOn: "Pay Daniel Okafor"
+- tapOn: "0.00"
+- inputText: "0"
+- assertVisible: "Enter an amount greater than $0.00."
+- eraseText
+- inputText: "50"
+- assertNotVisible: "Enter an amount greater than $0.00."
+- tapOn: "Verify and send"
+- assertVisible: "Show code"
+- tapOn: "Code (local demo: 123456)"
+- inputText: "123456"
+- tapOn: "Show code"
+- assertVisible: "Hide code"

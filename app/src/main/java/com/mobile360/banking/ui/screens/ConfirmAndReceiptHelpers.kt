@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.mobile360.banking.data.DemoAccounts
 import java.io.ByteArrayOutputStream
 import java.io.File
+import com.mobile360.banking.ui.components.ValidatedTextField
 
 /** Saves bytes to Downloads; returns a human-readable location or null on failure. */
 fun saveToDownloads(context: Context, fileName: String, mime: String, bytes: ByteArray): String? {
@@ -79,7 +80,13 @@ fun shareText(context: Context, subject: String, text: String) {
 
 /** Local demo re-verification: the demo code stands in for biometrics. Nothing is sent. */
 @Composable
-fun CodeVerifyDialog(title: String, message: String, confirmLabel: String, onDismiss: () -> Unit, onVerified: () -> Unit) {
+fun CodeVerifyDialog(
+    title: String,
+    message: String,
+    confirmLabel: String,
+    onDismiss: () -> Unit,
+    onVerified: () -> Unit,
+) {
     var code by rememberSaveable { mutableStateOf("") }
     var wrong by rememberSaveable { mutableStateOf(false) }
     AlertDialog(
@@ -88,21 +95,22 @@ fun CodeVerifyDialog(title: String, message: String, confirmLabel: String, onDis
         text = {
             Column {
                 Text(message)
-                OutlinedTextField(
+                // CR-011: shared validated field with eye toggle and error border
+                ValidatedTextField(
                     value = code,
-                    onValueChange = { v -> code = v.filter { it.isDigit() }.take(6); wrong = false },
-                    label = { Text("Code (local demo: ${DemoAccounts.DEMO_CODE})") },
-                    singleLine = true,
-                    isError = wrong,
-                    supportingText = { if (wrong) Text("That code is not correct.") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
+                    onValueChange = { code = it.take(6).filter { c -> c.isDigit() }; wrong = false },
+                    label = "Code (local demo: ${DemoAccounts.DEMO_CODE})",
+                    error = if (wrong) "That code is not correct." else null,
+                    secret = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                 )
             }
         },
         confirmButton = {
-            TextButton(onClick = { if (code == DemoAccounts.DEMO_CODE) onVerified() else wrong = true }) { Text(confirmLabel) }
+            TextButton(onClick = {
+                if (code == DemoAccounts.DEMO_CODE) onVerified() else wrong = true
+            }) { Text(confirmLabel) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
     )
 }
