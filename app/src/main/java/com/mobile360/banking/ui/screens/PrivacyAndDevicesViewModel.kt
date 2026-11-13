@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
 
 data class PrivacyState(
     val loading: Boolean = true,
@@ -88,4 +91,40 @@ class PrivacyAndDevicesViewModel(
     }
 
     fun dismissMessage() { extras.value = Extras() }
+
+    private val _export = MutableStateFlow(ExportState())
+    val exportState: StateFlow<ExportState> = _export
+
+    // CR-014: compiles the user's records into a JSON file in [cacheDir]; the screen shares it once.
+    fun exportData(cacheDir: File) {
+        if (_export.value.progress != null) return
+        _export.value = ExportState(progress = 0)
+        viewModelScope.launch {
+            try {
+                val file = withContext(Dispatchers.IO) {
+                    writeDataExport(File(cacheDir, "exports"), bank) { p -> _export.value = _export.value.copy(progress = p) }
+                }
+                bank.audit("DATA_EXPORT", "User exported their data to a local JSON file.")
+                _export.value = ExportState(ready = true, shareFile = file)
+            } catch (e: Exception) {
+                _export.value = ExportState(error = "Could not export your data: ${e.message ?: "request failed"}.")
+            }
+        }
+    }
+
+    fun exportShared() {
+        _export.value = _export.value.copy(shareFile = null)
+    }
+
+    fun exportFailed(reason: String) {
+        _export.value = ExportState(error = "Could not export your data: $reason.")
+    }
 }
+
+// CR-014: export progress. progress is 0-100 while running, null otherwise.
+data class ExportState(
+    val progress: Int? = null,
+    val ready: Boolean = false,
+    val error: String? = null,
+    val shareFile: File? = null,
+)

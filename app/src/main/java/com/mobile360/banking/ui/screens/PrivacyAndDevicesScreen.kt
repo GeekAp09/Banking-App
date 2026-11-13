@@ -185,6 +185,8 @@ fun PrivacyAndDevicesScreen(
                     }
                 }
             }
+            // CR-014: Export my data card
+            ExportDataCard(viewModel)
 
             BankCard {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
