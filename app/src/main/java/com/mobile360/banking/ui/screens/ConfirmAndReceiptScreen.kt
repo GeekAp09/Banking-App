@@ -72,6 +72,10 @@ import com.mobile360.banking.ui.components.TonalButton
 import com.mobile360.banking.ui.theme.AppColors
 
 import androidx.compose.foundation.layout.widthIn
+import android.app.Activity
+import android.content.ContextWrapper
+import com.google.android.play.core.review.ReviewManagerFactory
+import androidx.compose.material.icons.filled.Star
 private val Variant = Color(0xFF48525B)
 private val CardBorder = BorderStroke(1.dp, AppColors.brandBorder.copy(alpha = 0.3f))
 
@@ -79,6 +83,7 @@ private val CardBorder = BorderStroke(1.dp, AppColors.brandBorder.copy(alpha = 0
 fun ConfirmAndReceiptScreen(
     recipientId: String,
     onBack: () -> Unit,
+    onFeedback: (Int) -> Unit = {},
     viewModel: ConfirmAndReceiptViewModel = viewModel(factory = vmFactory { ConfirmAndReceiptViewModel(AppGraph.bank, AppGraph.session) })
 ) {
     val ctx = LocalContext.current
@@ -270,6 +275,12 @@ fun ConfirmAndReceiptScreen(
     }
 
     if (showVerify) {
+        // CR-015: rate-the-app prompt after a successful transfer
+        RatingPromptHost(
+            receiptShown = s.receipt != null,
+            viewModel = viewModel,
+            onFeedback = onFeedback,
+        )
         CodeVerifyDialog(
             title = "Verify and send",
             message = "Re-verify to send ${Money.format(s.amountCents)} to ${s.name}. Local demo: nothing is sent to a real bank.",
@@ -295,3 +306,54 @@ fun ConfirmAndReceiptScreen(
 }
 
 private fun Modifier.widthIn48(): Modifier = this.then(Modifier.widthIn(min = 48.dp))
+
+@Composable
+private fun RatingPromptHost(
+    receiptShown: Boolean,
+    viewModel: ConfirmAndReceiptViewModel,
+    onFeedback: (Int) -> Unit,
+) {
+    val show by viewModel.showRating.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    androidx.compose.runtime.LaunchedEffect(receiptShown) {
+        if (receiptShown) viewModel.onReceiptShown()
+    }
+    if (!show) return
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = { viewModel.dismissRating() },
+        title = { Text("Rate Banking") },
+        text = {
+            Row {
+                (1..5).forEach { n ->
+                    androidx.compose.material3.IconButton(onClick = {
+                        viewModel.dismissRating()
+                        if (ratingGoesToFeedback(n)) onFeedback(n) else launchStoreReview(context)
+                    }) {
+                        Icon(
+                            Icons.Filled.Star,
+                            contentDescription = "Rate $n stars",
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            androidx.compose.material3.TextButton(onClick = { viewModel.dismissRating() }) { Text("Not now") }
+        },
+    )
+}
+
+// Best effort: the Play review flow is quota-limited and may be unavailable.
+private fun launchStoreReview(context: android.content.Context) {
+    var c = context
+    while (c is ContextWrapper && c !is Activity) c = c.baseContext
+    val activity = c as? Activity ?: return
+    runCatching {
+        val manager = ReviewManagerFactory.create(activity)
+        manager.requestReviewFlow().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                runCatching { manager.launchReviewFlow(activity, task.result) }
+            }
+        }
+    }
+}

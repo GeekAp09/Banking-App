@@ -170,4 +170,11 @@ class SessionRepository(
     suspend fun setClosureStatus(status: String) {
         store.edit { it[K.closure] = status }
     }
+
+    suspend fun ratingPromptedAt(): Long =
+        store.data.first()[longPreferencesKey("rating_prompted_at")] ?: 0L
+
+    suspend fun markRatingPrompted() {
+        store.edit { it[longPreferencesKey("rating_prompted_at")] = System.currentTimeMillis() }
+    }
 }

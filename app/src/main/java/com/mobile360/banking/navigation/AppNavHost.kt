@@ -37,6 +37,7 @@ import com.mobile360.banking.ui.screens.VaultScreen
 import com.mobile360.banking.ui.screens.VerifyMFAScreen
 import com.mobile360.banking.ui.screens.WealthOverviewScreen
 import kotlinx.coroutines.launch
+import com.mobile360.banking.ui.screens.FeedbackScreen
 
 private fun NavHostController.goTab(route: String) {
     navigate(route) {
@@ -108,8 +109,15 @@ fun AppNavHost() {
                     arguments = listOf(navArgument(Routes.ARG_RECIPIENT_ID) { type = NavType.StringType })
                 ) { entry ->
                     ConfirmAndReceiptScreen(
+                    onFeedback = { stars -> nav.navigate(Routes.feedback(stars)) },
                         recipientId = entry.arguments?.getString(Routes.ARG_RECIPIENT_ID).orEmpty(),
                         onBack = { nav.popBackStack() }
+                    )
+                }
+                composable(Routes.FEEDBACK_PATTERN, arguments = listOf(navArgument(Routes.ARG_STARS) { type = NavType.IntType })) { entry ->
+                    FeedbackScreen(
+                        stars = entry.arguments?.getInt(Routes.ARG_STARS) ?: 1,
+                        onDone = { nav.popBackStack() },
                     )
                 }
                 composable(Routes.VAULT) { VaultScreen(onBack = { nav.popBackStack() }) }

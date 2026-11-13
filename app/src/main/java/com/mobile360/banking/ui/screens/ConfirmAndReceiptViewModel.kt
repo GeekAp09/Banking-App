@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import com.mobile360.banking.AppGraph
 
 data class ConfirmUiState(
     val loading: Boolean = true,
@@ -104,4 +105,29 @@ class ConfirmAndReceiptViewModel(private val bank: BankRepository, session: Sess
             }
         }
     }
+
+    // CR-015: rate-the-app prompt after a completed transfer
+    private val _showRating = MutableStateFlow(false)
+    val showRating: StateFlow<Boolean> = _showRating
+
+    fun onReceiptShown() {
+        viewModelScope.launch {
+            if (shouldPromptRating(AppGraph.session.ratingPromptedAt(), System.currentTimeMillis())) {
+                _showRating.value = true
+                AppGraph.session.markRatingPrompted()
+            }
+        }
+    }
+
+    fun dismissRating() {
+        _showRating.value = false
+    }
 }
+
+const val RATING_COOLDOWN_MS = 30L * 24 * 60 * 60 * 1000
+
+fun shouldPromptRating(lastPromptedAt: Long, now: Long): Boolean =
+    lastPromptedAt == 0L || now - lastPromptedAt >= RATING_COOLDOWN_MS
+
+// 1-3 stars go to the internal feedback form, 4-5 to the store review.
+fun ratingGoesToFeedback(stars: Int): Boolean = stars in 1..3
