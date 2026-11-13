@@ -70,6 +70,7 @@ import com.mobile360.banking.ui.components.StatusBadge
 import com.mobile360.banking.ui.theme.AppColors
 import java.io.File
 import com.mobile360.banking.ui.components.SkeletonList
+import com.mobile360.banking.ui.components.IllustratedEmptyState
 
 private val Variant = Color(0xFF48525B)
 
@@ -160,8 +161,8 @@ fun PayScreen(
                 Surface(shape = RoundedCornerShape(12.dp), color = Color.White, border = BorderStroke(1.dp, AppColors.brandBorder.copy(alpha = 0.3f))) {
                     when {
                         list == null -> Box(Modifier.fillMaxWidth().height(96.dp), contentAlignment = Alignment.Center) { SkeletonList(rows = 3) }
-                        list.isEmpty() -> if (!sync) EmptyState("Contact sync is off", "Turn on Sync contacts to see friends who use Banking, or enter a recipient manually.")
-                        else EmptyState("No contacts found", "No contact on Banking matches \"$query\".")
+                        list.isEmpty() -> if (!sync) IllustratedEmptyState("Contact sync is off", "Turn on Sync contacts to see friends who use Banking, or enter a recipient manually.")
+                        else IllustratedEmptyState("No contacts found", "No contact on Banking matches \"$query\".")
                         else -> Column {
                             list.forEachIndexed { i, c ->
                                 if (i > 0) Box(Modifier.fillMaxWidth().height(1.dp).background(AppColors.brandBorder.copy(alpha = 0.15f)))
