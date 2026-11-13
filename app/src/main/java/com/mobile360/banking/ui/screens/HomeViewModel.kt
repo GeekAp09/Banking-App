@@ -40,13 +40,22 @@ class HomeViewModel(private val bank: BankRepository, private val session: Sessi
 
     fun acceptPolicy() {
         viewModelScope.launch {
-            try {
-                session.acceptPolicy()
-                bank.audit("POLICY_ACCEPTED", "Policy and data consent accepted")
-                _policyError.value = false
-            } catch (e: Exception) {
-                _policyError.value = true
-            }
+            _policyError.value = !recordPolicyAcceptance(
+                save = { session.acceptPolicy() },
+                audit = { type, detail -> bank.audit(type, detail) },
+            )
         }
     }
+}
+
+/** CR-005: saves the acceptance, then writes the audit event; false when saving fails. */
+internal suspend fun recordPolicyAcceptance(
+    save: suspend () -> Unit,
+    audit: suspend (String, String) -> Unit,
+): Boolean = try {
+    save()
+    audit("POLICY_ACCEPTED", "Policy and data consent accepted")
+    true
+} catch (e: Exception) {
+    false
 }
