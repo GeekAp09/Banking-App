@@ -37,6 +37,13 @@ import com.mobile360.banking.ui.screens.VaultScreen
 import com.mobile360.banking.ui.screens.VerifyMFAScreen
 import com.mobile360.banking.ui.screens.WealthOverviewScreen
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
+import com.mobile360.banking.data.ConnectivityObserver
+import com.mobile360.banking.ui.components.NetworkIndicator
 
 private fun NavHostController.goTab(route: String) {
     navigate(route) {
@@ -64,7 +71,10 @@ fun AppNavHost() {
         }
     }
 
-    Box(Modifier.fillMaxSize().safeDrawingPadding()) {
+    val context = LocalContext.current
+val observer = remember { ConnectivityObserver(context) }
+val online by observer.online.collectAsState(initial = false)
+Box(Modifier.fillMaxSize().safeDrawingPadding()) {
         Column(Modifier.fillMaxSize()) {
             NavHost(nav, startDestination = startRoute, modifier = Modifier.weight(1f)) {
                 composable(Routes.SIGN_IN) {
@@ -152,5 +162,10 @@ fun AppNavHost() {
                 BankBottomBar(currentRoute = route, onSelect = { nav.goTab(it) })
             }
         }
+        // CR-004: network indicator, top right
+        NetworkIndicator(
+            online = online,
+            modifier = Modifier.align(Alignment.TopEnd).padding(top = 4.dp, end = 8.dp)
+        )
     }
 }
