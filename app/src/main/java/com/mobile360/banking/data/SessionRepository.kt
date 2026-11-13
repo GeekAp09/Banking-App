@@ -65,6 +65,8 @@ class SessionRepository(
         val lockedUntil = longPreferencesKey("locked_until")
         val closure = stringPreferencesKey("closure")
         val contactSync = booleanPreferencesKey("contact_sync")
+
+        val policyAccepted = booleanPreferencesKey("policy_accepted")
     }
 
     val session: Flow<SessionState> = store.data.map { p ->
@@ -169,5 +171,12 @@ class SessionRepository(
 
     suspend fun setClosureStatus(status: String) {
         store.edit { it[K.closure] = status }
+    }
+
+    // CR-005: first-visit policy consent, kept across sign-outs
+    val policyAccepted: Flow<Boolean> get() = store.data.map { it[K.policyAccepted] ?: false }
+
+    suspend fun acceptPolicy() {
+        store.edit { it[K.policyAccepted] = true }
     }
 }

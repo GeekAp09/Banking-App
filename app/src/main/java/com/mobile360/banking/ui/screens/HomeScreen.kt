@@ -136,6 +136,39 @@ fun HomeScreen(
                 }
             }
         )
+        // CR-005: first-visit policy consent
+        val policyAccepted by viewModel.policyAccepted.collectAsStateWithLifecycle()
+        val policyError by viewModel.policyError.collectAsStateWithLifecycle()
+        if (policyAccepted == false) {
+            var acceptedPolicy by rememberSaveable { mutableStateOf(false) }
+            var consentedData by rememberSaveable { mutableStateOf(false) }
+            AlertDialog(
+                onDismissRequest = {},
+                properties = androidx.compose.ui.window.DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
+                title = { Text("Policy and consent") },
+                text = {
+                    Column {
+                        Text("Please review how we handle your account and personal data before you continue.")
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = acceptedPolicy, onCheckedChange = { acceptedPolicy = it })
+                            Text("I accept the policy")
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = consentedData, onCheckedChange = { consentedData = it })
+                            Text("I consent to the use of my data as described")
+                        }
+                        if (policyError) {
+                            Text("Could not save your choice. Please try again.", color = MaterialTheme.colorScheme.error)
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(enabled = acceptedPolicy && consentedData, onClick = { viewModel.acceptPolicy() }) {
+                        Text("Accept and continue")
+                    }
+                }
+            )
+        }
     }
 }
 

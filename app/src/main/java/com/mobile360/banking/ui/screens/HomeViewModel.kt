@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobile360.banking.data.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 data class HomeUiState(
     val loading: Boolean = true,
@@ -28,4 +29,24 @@ class HomeViewModel(private val bank: BankRepository, private val session: Sessi
             notifications = notes
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
+
+    // CR-005: null until the stored flag is known, so the form never flashes
+    val policyAccepted: StateFlow<Boolean?> = session.policyAccepted
+        .map<Boolean, Boolean?> { it }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val _policyError = MutableStateFlow(false)
+    val policyError: StateFlow<Boolean> = _policyError
+
+    fun acceptPolicy() {
+        viewModelScope.launch {
+            try {
+                session.acceptPolicy()
+                bank.audit("POLICY_ACCEPTED", "Policy and data consent accepted")
+                _policyError.value = false
+            } catch (e: Exception) {
+                _policyError.value = true
+            }
+        }
+    }
 }
