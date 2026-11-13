@@ -39,4 +39,15 @@ class MoreAndSettingsViewModel(
             done()
         }
     }
+
+    // CR-008: appearance choices
+    val appearance = session.appearance
+
+    fun setAccent(index: Int) {
+        viewModelScope.launch { session.setAccent(index) }
+    }
+
+    fun setDynamicColor(on: Boolean) {
+        viewModelScope.launch { session.setDynamicColor(on) }
+    }
 }

@@ -170,4 +170,23 @@ class SessionRepository(
     suspend fun setClosureStatus(status: String) {
         store.edit { it[K.closure] = status }
     }
+
+    // CR-008: accent colour index and system dynamic colour choice
+    private val accentKey = intPreferencesKey("accent")
+    private val dynamicColorKey = booleanPreferencesKey("dynamic_color")
+
+    val appearance: Flow<Appearance> = store.data.map {
+        Appearance(accent = it[accentKey] ?: 0, dynamicColor = it[dynamicColorKey] ?: false)
+    }
+
+    suspend fun setAccent(index: Int) {
+        store.edit { it[accentKey] = index }
+    }
+
+    suspend fun setDynamicColor(on: Boolean) {
+        store.edit { it[dynamicColorKey] = on }
+    }
 }
+
+// CR-008: appearance choices, stored per device in the session DataStore
+data class Appearance(val accent: Int = 0, val dynamicColor: Boolean = false)

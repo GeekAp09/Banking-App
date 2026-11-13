@@ -66,6 +66,7 @@ import com.mobile360.banking.ui.components.OutlinedAction
 import com.mobile360.banking.ui.components.RowDivider
 import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
+import androidx.compose.ui.draw.clip
 
 @Composable
 fun MoreAndSettingsScreen(
@@ -119,6 +120,8 @@ fun MoreAndSettingsScreen(
         }
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             state.error?.let { Banner(it, isError = true) }
+            // CR-008: appearance section
+            AppearanceSection(viewModel)
             Section("Accessibility") {
                 BankCard {
                     SwitchRow(Icons.Filled.Contrast, "Easy Mode", "Larger text, high contrast", state.prefs.easyMode) {
@@ -198,5 +201,55 @@ private fun SwitchRow(icon: androidx.compose.ui.graphics.vector.ImageVector?, ti
             Text(subtitle, style = MaterialTheme.typography.bodySmall, color = AppColors.onSurfaceVariant)
         }
         Switch(checked = checked, onCheckedChange = null)
+    }
+}
+
+// CR-008: accent swatches and system colour switch
+@androidx.compose.runtime.Composable
+private fun AppearanceSection(viewModel: MoreAndSettingsViewModel) {
+    val appearance = viewModel.appearance
+        .collectAsStateWithLifecycle(initialValue = com.mobile360.banking.data.Appearance()).value
+    val supported = com.mobile360.banking.ui.theme.dynamicColorSupported()
+    val following = supported && appearance.dynamicColor
+    Section("Appearance") {
+        BankCard {
+            Text(
+                "Accent colour",
+                modifier = androidx.compose.ui.Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+            Row(
+                modifier = androidx.compose.ui.Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)
+            ) {
+                com.mobile360.banking.ui.theme.AccentOptions.all.forEachIndexed { index, option ->
+                    Box(
+                        modifier = androidx.compose.ui.Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(option.color)
+                            .clickable(onClickLabel = option.name) { viewModel.setAccent(index) }
+                    ) {
+                        if (appearance.accent == index) {
+                            Text("✓", color = androidx.compose.ui.graphics.Color.White, modifier = androidx.compose.ui.Modifier.align(androidx.compose.ui.Alignment.Center))
+                        }
+                    }
+                }
+            }
+            if (supported) {
+                SwitchRow(
+                    icon = null,
+                    title = "Use system colours",
+                    subtitle = "Follow your wallpaper palette",
+                    checked = appearance.dynamicColor,
+                    onChange = { viewModel.setDynamicColor(it) }
+                )
+                if (following) {
+                    Text(
+                        "Following system colours",
+                        modifier = androidx.compose.ui.Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
+            }
+        }
     }
 }

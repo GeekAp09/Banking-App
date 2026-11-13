@@ -67,3 +67,19 @@ object AppColors {
     val positive = Color(0xFF1B6B3A)
     val scrim = Color(0x661A1F23)
 }
+
+// CR-008: curated accent options; every colour keeps white text at AA contrast
+data class AccentOption(val name: String, val color: Color)
+
+object AccentOptions {
+    val all = listOf(
+        AccentOption("Default", AppColors.primary),
+        AccentOption("Blue", Color(0xFF1565C0)),
+        AccentOption("Green", Color(0xFF2E7D32)),
+        AccentOption("Purple", Color(0xFF6A1B9A)),
+        AccentOption("Red", Color(0xFFC62828)),
+        AccentOption("Teal", Color(0xFF00695C))
+    )
+
+    fun at(index: Int): AccentOption = all.getOrElse(index) { all[0] }
+}

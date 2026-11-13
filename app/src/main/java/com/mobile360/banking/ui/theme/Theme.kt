@@ -3,9 +3,11 @@ package com.mobile360.banking.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 
 @Composable
-fun BankingTheme(easyMode: Boolean = false, content: @Composable () -> Unit) {
+private fun BaseBankingTheme(easyMode: Boolean = false, content: @Composable () -> Unit) {
     val base = lightColorScheme(
         primary = AppColors.primaryContainer,
         onPrimary = AppColors.onPrimary,
@@ -54,3 +56,23 @@ fun BankingTheme(easyMode: Boolean = false, content: @Composable () -> Unit) {
         content = content
     )
 }
+
+// CR-008: applies the chosen accent or the system dynamic palette on top of the base theme
+@Composable
+fun BankingTheme(easyMode: Boolean, content: @Composable () -> Unit) {
+    val appearance by com.mobile360.banking.AppGraph.session.appearance
+        .collectAsState(initial = com.mobile360.banking.data.Appearance())
+    BaseBankingTheme(easyMode) {
+        val base = MaterialTheme.colorScheme
+        val context = androidx.compose.ui.platform.LocalContext.current
+        val scheme = if (appearance.dynamicColor && dynamicColorSupported()) {
+            androidx.compose.material3.dynamicLightColorScheme(context)
+        } else {
+            val accent = AccentOptions.at(appearance.accent).color
+            base.copy(primary = accent, onPrimary = androidx.compose.ui.graphics.Color.White, surfaceTint = accent)
+        }
+        MaterialTheme(colorScheme = scheme, typography = MaterialTheme.typography, shapes = MaterialTheme.shapes, content = content)
+    }
+}
+
+fun dynamicColorSupported(): Boolean = android.os.Build.VERSION.SDK_INT >= 31
