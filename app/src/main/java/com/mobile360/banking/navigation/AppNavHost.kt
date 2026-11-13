@@ -121,7 +121,7 @@ fun AppNavHost() {
                     )
                 }
                 composable(Routes.HELP_AND_SUPPORT) { HelpAndSupportScreen(onBack = { nav.popBackStack() }) }
-                composable(Routes.PRIVACY_AND_DEVICES) { PrivacyAndDevicesScreen(onBack = { nav.popBackStack() }) }
+                composable(Routes.PRIVACY_AND_DEVICES) { PrivacyAndDevicesScreen(onBack = { nav.popBackStack() }, onAccountErased = { nav.navigate(Routes.SIGN_IN) { popUpTo(0) { inclusive = true } } }) }
                 composable(Routes.CLIENT_LIST) {
                     ClientListScreen(
                         onOpenClientDetail = { id -> nav.navigate(Routes.clientDetail(id)) },

@@ -1,0 +1,19 @@
+appId: com.mobile360.banking
+---
+# CR-007: permanent account deletion
+- launchApp
+- tapOn: "Sign in with fingerprint or face"
+- inputText: "123456"
+- tapOn: "Home"
+- tapOn: "More"
+- tapOn: "Privacy, devices, closure"
+- assertVisible: "Data Deletion & Account Closure"
+- assertVisible: ".*Deleting your account is permanent.*"
+- tapOn: "Request account closure"
+- tapOn: "Verification code"
+- inputText: "123456"
+- tapOn: "Submit request"
+- assertVisible: "Delete account permanently?"
+- tapOn: "Delete permanently"
+- assertVisible: "Welcome back, Amara"
+- assertNotVisible: "Request status: Pending"

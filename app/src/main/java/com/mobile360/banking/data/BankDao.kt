@@ -97,4 +97,20 @@ interface BankDao {
 
     @Query("SELECT * FROM notifications ORDER BY at DESC") fun notifications(): Flow<List<NotificationEntity>>
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertNotifications(v: List<NotificationEntity>)
+
+    // CR-007: erase personal data; audit_events are kept (retained by law)
+    @Query("DELETE FROM accounts") suspend fun deleteAccounts()
+    @Query("DELETE FROM cards") suspend fun deleteCards()
+    @Query("DELETE FROM transactions") suspend fun deleteTransactions()
+    @Query("DELETE FROM transfers") suspend fun deleteTransfers()
+    @Query("DELETE FROM holdings") suspend fun deleteHoldings()
+    @Query("DELETE FROM consents") suspend fun deleteConsents()
+    @Query("DELETE FROM devices") suspend fun deleteDevices()
+    @Query("DELETE FROM vault_docs") suspend fun deleteVaultDocs()
+    @Query("DELETE FROM round_events") suspend fun deleteRounds()
+    @Query("DELETE FROM insights") suspend fun deleteInsights()
+    @Query("DELETE FROM category_rules") suspend fun deleteRules()
+    @Query("DELETE FROM notifications") suspend fun deleteNotifications()
+    @Query("DELETE FROM users") suspend fun deleteUsers()
+    @Query("SELECT COUNT(*) FROM audit_events WHERE type = 'ACCOUNT_ERASED'") suspend fun erasedCount(): Int
 }

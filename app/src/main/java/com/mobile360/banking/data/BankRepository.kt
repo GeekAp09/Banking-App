@@ -79,6 +79,8 @@ interface BankRepository {
     fun trades(): Flow<List<TradeEntity>>
 
     suspend fun audit(type: String, detail: String)
+
+    suspend fun eraseUserData()
 }
 
 class RoomBankRepository(private val dao: BankDao) : BankRepository {
@@ -243,5 +245,25 @@ class RoomBankRepository(private val dao: BankDao) : BankRepository {
 
     override suspend fun audit(type: String, detail: String) {
         dao.insertAudit(AuditEventEntity(type = type, detail = detail, at = System.currentTimeMillis()))
+    }
+
+    // CR-007: permanent erasure of personal data; audit_events are kept (retained by law)
+    override suspend fun eraseUserData() {
+        dao.deleteAccounts()
+        dao.deleteCards()
+        dao.deleteTransactions()
+        dao.deleteTransfers()
+        dao.deleteHoldings()
+        dao.deleteConsents()
+        dao.deleteDevices()
+        dao.deleteVaultDocs()
+        dao.deleteRounds()
+        dao.deleteInsights()
+        dao.deleteRules()
+        dao.deleteNotifications()
+        dao.deleteContacts()
+        dao.deleteAllLinked()
+        dao.deleteUsers()
+        audit("ACCOUNT_ERASED", "personal data erased")
     }
 }

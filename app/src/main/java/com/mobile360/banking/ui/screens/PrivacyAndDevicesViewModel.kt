@@ -74,18 +74,44 @@ class PrivacyAndDevicesViewModel(
     fun clearClosureError() { _closureError.value = null }
 
     fun requestClosure(code: String, onDone: () -> Unit) {
-        if (code != DemoAccounts.DEMO_CODE) {
-            _closureError.value = "That code is not correct. Re-verification failed."
-            return
-        }
         viewModelScope.launch {
-            session.setClosureStatus("PENDING")
+            if (code != DemoAccounts.DEMO_CODE) {
+                _closureError.value = "That code is not correct. Re-verification failed."
+                return@launch
+            }
             bank.audit("ACCOUNT_CLOSURE_REQUESTED", "re-verified")
-            _closureError.value = null
-            extras.value = Extras(message = "Closure request submitted. Status: Pending.")
+            _confirmErase.value = true
             onDone()
         }
     }
 
+    // CR-007: final step, permanently erase the data and end the session
+    fun confirmErase(onErased: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                bank.eraseUserData()
+                session.eraseSession()
+                _confirmErase.value = false
+                onErased()
+            } catch (e: Exception) {
+                _confirmErase.value = false
+                _eraseError.value = "Could not delete the account: ${e.message ?: "request failed"}."
+            }
+        }
+    }
+
+    fun cancelErase() {
+        _confirmErase.value = false
+    }
+
+    fun clearEraseError() {
+        _eraseError.value = null
+    }
+
     fun dismissMessage() { extras.value = Extras() }
+
+    private val _confirmErase = MutableStateFlow(false)
+    val confirmEraseVisible: StateFlow<Boolean> = _confirmErase
+    private val _eraseError = MutableStateFlow<String?>(null)
+    val eraseError: StateFlow<String?> = _eraseError
 }

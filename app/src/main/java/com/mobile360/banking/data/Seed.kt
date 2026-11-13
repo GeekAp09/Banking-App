@@ -26,6 +26,8 @@ object SeedData {
 /** Seeds the same sample records for the demo accounts and for any new account. */
 suspend fun BankDao.seedIfEmpty() {
     if (userCount() > 0) return
+    // CR-007: an erased account must not be silently reseeded
+    if (erasedCount() > 0) return
     val now = System.currentTimeMillis()
 
     insertAccounts(listOf(

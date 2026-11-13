@@ -67,6 +67,7 @@ import com.mobile360.banking.vmFactory
 
 @Composable
 fun PrivacyAndDevicesScreen(
+    onAccountErased: () -> Unit = {},
     onBack: () -> Unit,
     viewModel: PrivacyAndDevicesViewModel = viewModel(factory = vmFactory { PrivacyAndDevicesViewModel(AppGraph.bank, AppGraph.session) })
 ) {
@@ -193,7 +194,7 @@ fun PrivacyAndDevicesScreen(
                     }
                     Column {
                         Text("Data Deletion & Account Closure", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold), color = AppColors.onSurface)
-                        Text("Closing deletes data except records kept by law", style = MaterialTheme.typography.bodySmall, color = AppColors.onSurfaceVariant)
+                        Text("Deleting your account is permanent and cannot be undone. All data is erased except records kept by law. Files already exported to Downloads are not removed.", style = MaterialTheme.typography.bodySmall, color = AppColors.onSurfaceVariant)
                     }
                 }
                 if (state.closurePending) {
@@ -280,5 +281,26 @@ fun PrivacyAndDevicesScreen(
             confirmButton = { TextButton(onClick = { viewModel.requestClosure(code) { closureDialog = false } }) { Text("Submit request", color = AppColors.error) } },
             dismissButton = { TextButton(onClick = { closureDialog = false }) { Text("Cancel") } }
         )
+        // CR-007: final permanent-deletion confirmation
+        run {
+            val confirmErase by viewModel.confirmEraseVisible.collectAsStateWithLifecycle()
+            val eraseError by viewModel.eraseError.collectAsStateWithLifecycle()
+            if (confirmErase) {
+                AlertDialog(
+                    onDismissRequest = { viewModel.cancelErase() },
+                    title = { Text("Delete account permanently?") },
+                    text = { Text("All your accounts, cards, transactions, consents and documents will be erased and you will be signed out. This cannot be undone.") },
+                    confirmButton = { TextButton(onClick = { viewModel.confirmErase(onAccountErased) }) { Text("Delete permanently") } },
+                    dismissButton = { TextButton(onClick = { viewModel.cancelErase() }) { Text("Cancel") } }
+                )
+            }
+            eraseError?.let { msg ->
+                AlertDialog(
+                    onDismissRequest = { viewModel.clearEraseError() },
+                    text = { Text(msg) },
+                    confirmButton = { TextButton(onClick = { viewModel.clearEraseError() }) { Text("OK") } }
+                )
+            }
+        }
     }
 }

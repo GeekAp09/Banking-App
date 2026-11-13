@@ -170,4 +170,9 @@ class SessionRepository(
     suspend fun setClosureStatus(status: String) {
         store.edit { it[K.closure] = status }
     }
+
+    // CR-007: clear the session, closure status and preference flags after erasure
+    suspend fun eraseSession() {
+        store.edit { it.clear() }
+    }
 }
