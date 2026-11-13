@@ -33,6 +33,7 @@ import com.mobile360.banking.data.Times
 import com.mobile360.banking.ui.theme.AppColors
 
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.mobile360.banking.ui.components.SkeletonList
 @Composable
 fun HomeScreen(
     onOpenWealthOverview: () -> Unit,
@@ -74,7 +75,7 @@ fun HomeScreen(
             ) { Icon(Icons.Filled.SupportAgent, "Support Advisor", tint = AppColors.secondary) }
         }
         if (state.loading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { SkeletonList(rows = 4) }
         } else Column(
             Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)

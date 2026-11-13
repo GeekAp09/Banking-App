@@ -72,6 +72,7 @@ import com.mobile360.banking.ui.components.TonalButton
 import com.mobile360.banking.ui.theme.AppColors
 
 import androidx.compose.foundation.layout.widthIn
+import com.mobile360.banking.ui.components.SkeletonList
 private val Variant = Color(0xFF48525B)
 private val CardBorder = BorderStroke(1.dp, AppColors.brandBorder.copy(alpha = 0.3f))
 
@@ -101,7 +102,7 @@ fun ConfirmAndReceiptScreen(
             }
         }
         when {
-            s.loading -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
+            s.loading -> Box(Modifier.fillMaxSize(), Alignment.Center) { SkeletonList(rows = 3) }
             s.notFound -> Column(Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 EmptyState("Recipient not found", "This contact is no longer available. Go back and pick another recipient.")
                 PrimaryButton("Back to Pay", onBack)

@@ -1,0 +1,13 @@
+# CR-001: standardised empty state with illustration
+appId: com.mobile360.banking
+---
+- launchApp
+- tapOn: "Continue"
+- inputText: "123456"
+- tapOn: "Verify"
+- tapOn: "Pay: Scan or send"
+- tapOn: "Search contacts"
+- inputText: "zzzz"
+- assertVisible: "No contacts found"
+- assertVisible: "No results to show"
+- assertNotVisible: "Daniel Okafor"

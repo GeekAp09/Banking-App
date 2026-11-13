@@ -69,6 +69,7 @@ import com.mobile360.banking.ui.components.InitialsAvatar
 import com.mobile360.banking.ui.components.StatusBadge
 import com.mobile360.banking.ui.theme.AppColors
 import java.io.File
+import com.mobile360.banking.ui.components.SkeletonList
 
 private val Variant = Color(0xFF48525B)
 
@@ -158,7 +159,7 @@ fun PayScreen(
                 val list = contacts
                 Surface(shape = RoundedCornerShape(12.dp), color = Color.White, border = BorderStroke(1.dp, AppColors.brandBorder.copy(alpha = 0.3f))) {
                     when {
-                        list == null -> Box(Modifier.fillMaxWidth().height(96.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                        list == null -> Box(Modifier.fillMaxWidth().height(96.dp), contentAlignment = Alignment.Center) { SkeletonList(rows = 3) }
                         list.isEmpty() -> if (!sync) EmptyState("Contact sync is off", "Turn on Sync contacts to see friends who use Banking, or enter a recipient manually.")
                         else EmptyState("No contacts found", "No contact on Banking matches \"$query\".")
                         else -> Column {

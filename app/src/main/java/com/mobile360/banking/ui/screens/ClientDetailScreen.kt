@@ -35,6 +35,7 @@ import com.mobile360.banking.ui.components.PrimaryButton
 import com.mobile360.banking.ui.components.TonalButton
 import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
+import com.mobile360.banking.ui.components.SkeletonList
 
 @Composable
 fun ClientDetailScreen(
@@ -72,7 +73,7 @@ fun ClientDetailScreen(
 
         when {
             s.error != null -> Message(s.error!!, onBack)
-            s.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            s.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { SkeletonList(rows = 4) }
             c == null -> Message("This client was not found.", onBack)
             else -> Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 if (copied) Text("Account number copied.", fontSize = 12.sp, color = AppColors.secondary)

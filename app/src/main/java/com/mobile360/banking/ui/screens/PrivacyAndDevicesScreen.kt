@@ -64,6 +64,7 @@ import com.mobile360.banking.ui.components.RowDivider
 import com.mobile360.banking.ui.components.StatusBadge
 import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
+import com.mobile360.banking.ui.components.SkeletonList
 
 @Composable
 fun PrivacyAndDevicesScreen(
@@ -83,7 +84,7 @@ fun PrivacyAndDevicesScreen(
             Icon(Icons.Filled.Shield, contentDescription = "Security settings", tint = AppColors.secondary, modifier = Modifier.padding(end = 16.dp))
         })
         if (state.loading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { SkeletonList(rows = 4) }
             return@Column
         }
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {

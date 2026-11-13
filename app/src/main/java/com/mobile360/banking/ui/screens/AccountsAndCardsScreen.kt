@@ -28,6 +28,8 @@ import com.mobile360.banking.data.Times
 import com.mobile360.banking.data.TransactionEntity
 import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
+import com.mobile360.banking.ui.components.SkeletonList
+import com.mobile360.banking.ui.components.IllustratedEmptyState
 
 @Composable
 fun AccountsAndCardsScreen(
@@ -56,7 +58,7 @@ fun AccountsAndCardsScreen(
             }
         }
         if (!state.loaded) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { SkeletonList(rows = 4) }
             return@Column
         }
         val txs = if (tab == 0 && selected != null) state.transactions.filter { it.accountId == selected } else state.transactions
@@ -200,7 +202,8 @@ private fun AcIcon(icon: androidx.compose.ui.graphics.vector.ImageVector, bg: Co
 
 @Composable
 private fun AcEmpty(title: String, message: String) {
-    AcCard { Text(title, fontWeight = FontWeight.SemiBold, color = AppColors.primary); Text(message, fontSize = 13.sp, color = AppColors.secondary) }
+    // CR-001: shared illustrated empty state
+    IllustratedEmptyState(title, message)
 }
 
 @Composable

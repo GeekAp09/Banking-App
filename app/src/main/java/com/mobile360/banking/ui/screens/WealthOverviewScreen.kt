@@ -27,6 +27,7 @@ import com.mobile360.banking.AppGraph
 import com.mobile360.banking.data.Money
 import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
+import com.mobile360.banking.ui.components.SkeletonList
 
 @Composable
 fun WealthOverviewScreen(
@@ -62,7 +63,7 @@ fun WealthOverviewScreen(
             }
         }
         if (!state.loaded) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { SkeletonList(rows = 4) }
             return@Column
         }
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {

@@ -29,6 +29,7 @@ import com.mobile360.banking.vmFactory
 
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.foundation.text.KeyboardOptions
+import com.mobile360.banking.ui.components.SkeletonList
 @Composable
 fun TradeScreen(
     clientId: String,
@@ -65,7 +66,7 @@ fun TradeScreen(
         }
 
         if (s.loading) {
-            Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { SkeletonList(rows = 4) }
         } else if (c == null || h == null) {
             Column(Modifier.weight(1f).fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 Text("This client or instrument was not found.", fontSize = 16.sp)

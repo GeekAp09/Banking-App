@@ -66,6 +66,7 @@ import com.mobile360.banking.ui.components.OutlinedAction
 import com.mobile360.banking.ui.components.RowDivider
 import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
+import com.mobile360.banking.ui.components.SkeletonList
 
 @Composable
 fun MoreAndSettingsScreen(
@@ -114,7 +115,7 @@ fun MoreAndSettingsScreen(
             }
         }
         if (state.loading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { SkeletonList(rows = 4) }
             return@Column
         }
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {

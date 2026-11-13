@@ -25,6 +25,7 @@ import com.mobile360.banking.data.Money
 import com.mobile360.banking.data.Times
 import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
+import com.mobile360.banking.ui.components.SkeletonList
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -46,7 +47,7 @@ fun CoachScreen(
             }
         }
         if (!state.loaded) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { SkeletonList(rows = 4) }
             return@Column
         }
         val recent = state.transactions.filter { it.amountCents < 0 }.take(5)
