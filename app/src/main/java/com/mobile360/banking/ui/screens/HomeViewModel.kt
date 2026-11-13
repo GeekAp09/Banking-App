@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobile360.banking.data.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 data class HomeUiState(
     val loading: Boolean = true,
@@ -28,4 +29,26 @@ class HomeViewModel(private val bank: BankRepository, private val session: Sessi
             notifications = notes
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
+
+    // CR-013: show the changelog once per installed version code
+    private val currentVersion = MutableStateFlow(0L)
+    private val whatsNewDismissed = MutableStateFlow(false)
+
+    val showWhatsNew: StateFlow<Boolean> = combine(
+        currentVersion, session.lastSeenVersion, whatsNewDismissed
+    ) { current, stored, dismissed -> !dismissed && shouldShowWhatsNew(stored, current) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun setCurrentVersion(code: Long) {
+        currentVersion.value = code
+    }
+
+    fun dismissWhatsNew() {
+        whatsNewDismissed.value = true
+        val code = currentVersion.value
+        viewModelScope.launch { runCatching { session.markVersionSeen(code) } }
+    }
 }
+
+/** CR-013: true when the installed version is newer than the last one whose changelog was seen. */
+fun shouldShowWhatsNew(stored: Long, current: Long): Boolean = current > 0 && stored < current

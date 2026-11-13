@@ -136,6 +136,19 @@ fun HomeScreen(
                 }
             }
         )
+        // CR-013: What's New dialog
+        val showWhatsNew by viewModel.showWhatsNew.collectAsStateWithLifecycle()
+        val versionContext = LocalContext.current
+        LaunchedEffect(Unit) {
+            val info = versionContext.packageManager.getPackageInfo(versionContext.packageName, 0)
+            viewModel.setCurrentVersion(androidx.core.content.pm.PackageInfoCompat.getLongVersionCode(info))
+        }
+        if (showWhatsNew) AlertDialog(
+            onDismissRequest = { viewModel.dismissWhatsNew() },
+            confirmButton = { TextButton(onClick = { viewModel.dismissWhatsNew() }) { Text("Got it") } },
+            title = { Text("What's New") },
+            text = { Text("• Show-once release notes\n• Version and build shown in Settings\n• Performance and stability improvements") }
+        )
     }
 }
 
@@ -158,3 +171,4 @@ private fun HubRow(icon: ImageVector, tileBg: Color, tileFg: Color, title: Strin
         Icon(Icons.Filled.ChevronRight, null, tint = Color(0xFF73777E))
     }
 }
+

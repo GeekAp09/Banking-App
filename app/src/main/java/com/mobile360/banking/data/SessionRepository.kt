@@ -65,6 +65,8 @@ class SessionRepository(
         val lockedUntil = longPreferencesKey("locked_until")
         val closure = stringPreferencesKey("closure")
         val contactSync = booleanPreferencesKey("contact_sync")
+
+        val lastSeenVersion = longPreferencesKey("last_seen_version")
     }
 
     val session: Flow<SessionState> = store.data.map { p ->
@@ -169,5 +171,12 @@ class SessionRepository(
 
     suspend fun setClosureStatus(status: String) {
         store.edit { it[K.closure] = status }
+    }
+
+    // CR-013: last app version code whose changelog the user has seen
+    val lastSeenVersion: Flow<Long> get() = store.data.map { it[K.lastSeenVersion] ?: 0L }
+
+    suspend fun markVersionSeen(code: Long) {
+        store.edit { it[K.lastSeenVersion] = code }
     }
 }
