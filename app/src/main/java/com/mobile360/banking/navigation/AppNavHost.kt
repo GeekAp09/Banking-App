@@ -37,6 +37,8 @@ import com.mobile360.banking.ui.screens.VaultScreen
 import com.mobile360.banking.ui.screens.VerifyMFAScreen
 import com.mobile360.banking.ui.screens.WealthOverviewScreen
 import kotlinx.coroutines.launch
+import com.mobile360.banking.ui.components.CoachmarkTourHost
+import com.mobile360.banking.ui.components.tourBarAnchor
 
 private fun NavHostController.goTab(route: String) {
     navigate(route) {
@@ -149,8 +151,10 @@ fun AppNavHost() {
                 }
             }
             if (route in Routes.bottomBarRoutes) {
-                BankBottomBar(currentRoute = route, onSelect = { nav.goTab(it) })
+                BankBottomBar(currentRoute = route, onSelect = { nav.goTab(it) }, modifier = Modifier.tourBarAnchor())
             }
         }
+        // CR-012: first-launch coachmark tour
+        CoachmarkTourHost()
     }
 }

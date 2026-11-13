@@ -170,4 +170,13 @@ class SessionRepository(
     suspend fun setClosureStatus(status: String) {
         store.edit { it[K.closure] = status }
     }
+
+    // CR-012: kept in DataStore and outside signOut so the tour never repeats
+    private val tourSeenKey = booleanPreferencesKey("tour_seen")
+
+    val tourSeen: Flow<Boolean> = store.data.map { it[tourSeenKey] ?: false }
+
+    suspend fun markTourSeen() {
+        store.edit { it[tourSeenKey] = true }
+    }
 }
