@@ -33,6 +33,10 @@ import com.mobile360.banking.data.Times
 import com.mobile360.banking.ui.theme.AppColors
 
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 @Composable
 fun HomeScreen(
     onOpenWealthOverview: () -> Unit,
@@ -79,6 +83,8 @@ fun HomeScreen(
             Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // CR-003: image carousel
+            ImageCarousel()
             Column(
                 Modifier.fillMaxWidth().background(AppColors.primaryContainer, RoundedCornerShape(12.dp))
                     .clickable(role = Role.Button, onClick = onOpenWealthOverview).padding(16.dp)
@@ -156,5 +162,35 @@ private fun HubRow(icon: ImageVector, tileBg: Color, tileFg: Color, title: Strin
             Text(subtitle, fontSize = 12.sp, color = Color(0xFF43474D), maxLines = 1)
         }
         Icon(Icons.Filled.ChevronRight, null, tint = Color(0xFF73777E))
+    }
+}
+
+// CR-003: placeholder carousel tiles (label, colour)
+internal val CarouselPlaceholders: List<Pair<String, Color>> = listOf(
+    "Carousel image 1" to Color(0xFF1E88E5),
+    "Carousel image 2" to Color(0xFF43A047),
+    "Carousel image 3" to Color(0xFFF4511E),
+    "Carousel image 4" to Color(0xFF8E24AA)
+)
+
+@Composable
+private fun ImageCarousel() {
+    LazyRow(
+        modifier = Modifier.fillMaxWidth().height(140.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        itemsIndexed(CarouselPlaceholders) { _, item ->
+            Box(
+                modifier = Modifier
+                    .fillParentMaxWidth(0.85f)
+                    .fillMaxHeight()
+                    .background(item.second, RoundedCornerShape(16.dp))
+                    .semantics { contentDescription = item.first },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(item.first, color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        }
     }
 }
