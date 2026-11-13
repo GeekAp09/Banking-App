@@ -146,6 +146,8 @@ fun MoreAndSettingsScreen(
                     SwitchRow(null, "Saving round alerts", "Portfolio rebalancing and round-up confirmations", state.prefs.roundAlerts) { viewModel.setFlag(PrefFlag.ROUND_ALERTS, it) }
                 }
             }
+            // CR-009: storage & cache section
+            StorageCacheSection(viewModel)
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(Modifier.padding(horizontal = 4.dp), verticalAlignment = Alignment.Bottom) {
                     Text("Privacy, devices, closure", style = MaterialTheme.typography.labelMedium, color = AppColors.secondary, modifier = Modifier.weight(1f))

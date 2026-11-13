@@ -12,6 +12,13 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import android.content.Context
+import com.mobile360.banking.data.StorageInfo
+import com.mobile360.banking.data.clearDirContents
+import com.mobile360.banking.data.measureStorage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 
 data class MoreState(
     val loading: Boolean = true,
@@ -39,4 +46,43 @@ class MoreAndSettingsViewModel(
             done()
         }
     }
+
+    // CR-009
+    private val _storage = MutableStateFlow(StorageUi())
+    val storage: StateFlow<StorageUi> = _storage
+
+    private fun measure(context: Context): StorageInfo = measureStorage(
+        context.getDatabasePath("banking.db"),
+        context.cacheDir,
+        listOf(context.getExternalFilesDir(null)),
+    )
+
+    fun refreshStorage(context: Context) {
+        val app = context.applicationContext
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) { runCatching { measure(app) } }
+            _storage.value = result.fold(
+                { _storage.value.copy(info = it, error = null) },
+                { _storage.value.copy(error = "Storage could not be measured.") },
+            )
+        }
+    }
+
+    fun clearCache(context: Context) {
+        val app = context.applicationContext
+        viewModelScope.launch {
+            val ok = withContext(Dispatchers.IO) { runCatching { clearDirContents(app.cacheDir) }.getOrDefault(false) }
+            _storage.value = _storage.value.copy(
+                message = if (ok) "Cache cleared" else "Could not clear the cache.",
+            )
+            refreshStorage(app)
+        }
+    }
 }
+
+// CR-009: storage breakdown shown in Settings
+data class StorageUi(
+    val info: StorageInfo? = null,
+    val error: String? = null,
+    val message: String? = null,
+)
