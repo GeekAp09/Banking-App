@@ -28,6 +28,7 @@ import com.mobile360.banking.data.Times
 import com.mobile360.banking.data.TransactionEntity
 import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
+import com.mobile360.banking.ui.components.ScrollToTopLazyColumn
 
 @Composable
 fun AccountsAndCardsScreen(
@@ -61,7 +62,7 @@ fun AccountsAndCardsScreen(
         }
         val txs = if (tab == 0 && selected != null) state.transactions.filter { it.accountId == selected } else state.transactions
         val shown = if (showAll) txs else txs.take(3)
-        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        ScrollToTopLazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             if (message != null) item {
                 Surface(shape = RoundedCornerShape(12.dp), color = AppColors.secondaryContainer) {
                     Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {

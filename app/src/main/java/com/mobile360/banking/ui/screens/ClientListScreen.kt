@@ -34,6 +34,7 @@ import com.mobile360.banking.ui.theme.AppColors
 import com.mobile360.banking.vmFactory
 
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.mobile360.banking.ui.components.ScrollToTopLazyColumn
 @Composable
 fun ClientListScreen(
     onOpenClientDetail: (id: String) -> Unit,
@@ -70,7 +71,7 @@ fun ClientListScreen(
             }
         }
 
-        LazyColumn(
+        ScrollToTopLazyColumn(
             Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)

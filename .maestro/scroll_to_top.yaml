@@ -1,0 +1,16 @@
+# CR-006
+appId: com.mobile360.banking
+---
+- launchApp
+- tapOn: "Use PIN or code instead"
+- inputText: "123456"
+- tapOn: "Verify"
+- tapOn: "Money"
+- assertVisible: "Everyday Savings"
+- assertNotVisible: "Back to top"
+- scroll
+- scroll
+- assertVisible: "Back to top"
+- tapOn: "Back to top"
+- assertVisible: "Everyday Savings"
+- assertNotVisible: "Back to top"
