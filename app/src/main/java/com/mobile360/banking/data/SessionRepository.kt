@@ -47,7 +47,7 @@ sealed interface VerifyResult {
 }
 
 /** Local demo sign-in: no SMS or email is sent; the code is DemoAccounts.DEMO_CODE. */
-class SessionRepository(
+open class SessionRepository(
     private val context: Context,
     private val dao: BankDao,
     private val ready: suspend () -> Unit
@@ -77,7 +77,7 @@ class SessionRepository(
         )
     }
 
-    val prefs: Flow<AppPrefs> = store.data.map { p ->
+    open val prefs: Flow<AppPrefs> = store.data.map { p ->
         AppPrefs(
             easyMode = p[booleanPreferencesKey(PrefFlag.EASY_MODE.key)] ?: false,
             roundUps = p[booleanPreferencesKey(PrefFlag.ROUND_UPS.key)] ?: true,
@@ -167,12 +167,12 @@ class SessionRepository(
         store.edit { it[booleanPreferencesKey(flag.key)] = value }
     }
 
-    suspend fun setClosureStatus(status: String) {
+    open suspend fun setClosureStatus(status: String) {
         store.edit { it[K.closure] = status }
     }
 
     // CR-007: clear the session, closure status and preference flags after erasure
-    suspend fun eraseSession() {
+    open suspend fun eraseSession() {
         store.edit { it.clear() }
     }
 }

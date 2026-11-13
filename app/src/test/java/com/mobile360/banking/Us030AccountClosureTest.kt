@@ -21,4 +21,10 @@ class Us030AccountClosureTest {
     fun test_us_030_no_request_is_not_pending() {
         assertFalse(state("NONE").closurePending)
     }
+
+    // CR-007: after erasure the closure status is back to NONE, so nothing is pending
+    @Test
+    fun cr_007_erased_state_has_no_pending_closure() {
+        assertFalse(state("NONE").closurePending)
+    }
 }
