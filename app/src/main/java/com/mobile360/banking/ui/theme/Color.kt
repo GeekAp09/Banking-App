@@ -81,5 +81,7 @@ object AccentOptions {
         AccentOption("Teal", Color(0xFF00695C))
     )
 
-    fun at(index: Int): AccentOption = all.getOrElse(index) { all[0] }
+    fun at(index: Int): AccentOption {
+        return if (index in all.indices) all[index] else all[0]
+    }
 }
