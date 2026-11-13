@@ -17,6 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
+/** Error text wins over helper text; null when neither is set. */
+fun validatedFieldMessage(error: String?, helper: String?): String? = error ?: helper
+
+/** The eye toggle's content description for the current visibility. */
+fun eyeToggleDescription(visible: Boolean): String = if (visible) "Hide code" else "Show code"
+
+/** Secret values are masked unless the user chose to reveal them. */
+fun fieldTransformation(secret: Boolean, visible: Boolean): VisualTransformation =
+    if (secret && !visible) PasswordVisualTransformation() else VisualTransformation.None
+
 /**
  * Shared text input: error border, helper or error line (always text, not colour alone)
  * and an optional eye toggle for secret values (masked by default).
@@ -34,23 +44,23 @@ fun ValidatedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     var visible by rememberSaveable { mutableStateOf(false) }
-    val message = error ?: helper
+    val message = validatedFieldMessage(error, helper)
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
         label = { Text(label) },
-        singleLine = singleLine,
+        modifier = modifier,
         isError = error != null,
-        supportingText = message?.let { { Text(it) } },
-        visualTransformation = if (secret && !visible) PasswordVisualTransformation() else VisualTransformation.None,
+        singleLine = singleLine,
         keyboardOptions = keyboardOptions,
+        visualTransformation = fieldTransformation(secret, visible),
+        supportingText = message?.let { { Text(it) } },
         trailingIcon = if (secret) {
             {
                 IconButton(onClick = { visible = !visible }) {
                     Icon(
                         if (visible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                        contentDescription = if (visible) "Hide code" else "Show code",
+                        contentDescription = eyeToggleDescription(visible),
                     )
                 }
             }
