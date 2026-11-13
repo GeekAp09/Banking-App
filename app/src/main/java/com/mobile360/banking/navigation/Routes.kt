@@ -31,8 +31,7 @@ object Routes {
     /** Routes that show the shared bottom navigation bar. */
     val bottomBarRoutes = setOf(HOME, ACCOUNTS_AND_CARDS, WEALTH_OVERVIEW, COACH, PAY, MORE_AND_SETTINGS)
 
-    const val FEEDBACK = "feedback"
     const val ARG_STARS = "stars"
-    const val FEEDBACK_PATTERN = "$FEEDBACK/{$ARG_STARS}"
-    fun feedback(stars: Int) = "$FEEDBACK/$stars"
+    const val FEEDBACK_PATTERN = "feedback/{$ARG_STARS}"
+    fun feedback(stars: Int) = "feedback/$stars"
 }

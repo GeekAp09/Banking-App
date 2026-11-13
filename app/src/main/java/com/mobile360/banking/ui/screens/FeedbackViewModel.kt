@@ -22,7 +22,9 @@ class FeedbackViewModel(private val bank: BankRepository) : ViewModel() {
     private val _state = MutableStateFlow(FeedbackUiState())
     val state: StateFlow<FeedbackUiState> = _state
 
-    fun setComment(v: String) = _state.update { it.copy(comment = v, error = null) }
+    fun setComment(text: String) {
+        _state.update { it.copy(comment = text, error = null) }
+    }
 
     fun submit(stars: Int) {
         val comment = _state.value.comment.trim()
