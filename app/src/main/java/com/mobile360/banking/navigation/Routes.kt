@@ -30,4 +30,7 @@ object Routes {
 
     /** Routes that show the shared bottom navigation bar. */
     val bottomBarRoutes = setOf(HOME, ACCOUNTS_AND_CARDS, WEALTH_OVERVIEW, COACH, PAY, MORE_AND_SETTINGS)
+
+    // CR-002
+    const val FEEDBACK = "feedback"
 }

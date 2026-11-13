@@ -97,4 +97,11 @@ interface BankDao {
 
     @Query("SELECT * FROM notifications ORDER BY at DESC") fun notifications(): Flow<List<NotificationEntity>>
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertNotifications(v: List<NotificationEntity>)
+
+    // CR-002: feedback reports, newest first
+    @Query("SELECT * FROM feedback_reports ORDER BY createdAt DESC, id DESC")
+    fun feedback(): Flow<List<FeedbackEntity>>
+
+    @Insert
+    suspend fun insertFeedback(v: FeedbackEntity)
 }

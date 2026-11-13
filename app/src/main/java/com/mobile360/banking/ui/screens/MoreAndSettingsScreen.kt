@@ -71,6 +71,7 @@ import com.mobile360.banking.vmFactory
 fun MoreAndSettingsScreen(
     onOpenPrivacyAndDevices: () -> Unit,
     onOpenHelpAndSupport: () -> Unit,
+    onOpenFeedback: () -> Unit,
     onSignOut: () -> Unit,
     viewModel: MoreAndSettingsViewModel = viewModel(factory = vmFactory { MoreAndSettingsViewModel(AppGraph.bank, AppGraph.session) })
 ) {
@@ -162,6 +163,12 @@ fun MoreAndSettingsScreen(
             Section("Help & Assistance") {
                 BankCard {
                     BankListRow("Help and support", subtitle = "FAQs, 24/7 private concierge, security", icon = Icons.Filled.SupportAgent, onClick = onOpenHelpAndSupport)
+                }
+            }
+            // CR-002: feedback & bug report entry
+            Section("Feedback & Bug Report") {
+                BankCard(onClick = onOpenFeedback) {
+                    Text("Feedback & Bug Report", modifier = Modifier.padding(16.dp))
                 }
             }
             OutlinedAction("Sign out", onClick = { viewModel.signOut(onSignOut) }, icon = Icons.AutoMirrored.Filled.Logout, modifier = Modifier.fillMaxWidth())

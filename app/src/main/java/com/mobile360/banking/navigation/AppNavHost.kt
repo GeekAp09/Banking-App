@@ -37,6 +37,7 @@ import com.mobile360.banking.ui.screens.VaultScreen
 import com.mobile360.banking.ui.screens.VerifyMFAScreen
 import com.mobile360.banking.ui.screens.WealthOverviewScreen
 import kotlinx.coroutines.launch
+import com.mobile360.banking.ui.screens.FeedbackScreen
 
 private fun NavHostController.goTab(route: String) {
     navigate(route) {
@@ -117,10 +118,12 @@ fun AppNavHost() {
                     MoreAndSettingsScreen(
                         onOpenPrivacyAndDevices = { nav.navigate(Routes.PRIVACY_AND_DEVICES) },
                         onOpenHelpAndSupport = { nav.navigate(Routes.HELP_AND_SUPPORT) },
-                        onSignOut = signOut
+                        onSignOut = signOut, onOpenFeedback = { nav.navigate(Routes.FEEDBACK) }
                     )
                 }
-                composable(Routes.HELP_AND_SUPPORT) { HelpAndSupportScreen(onBack = { nav.popBackStack() }) }
+                composable(Routes.HELP_AND_SUPPORT) { HelpAndSupportScreen(onBack = { nav.popBackStack() })
+                // CR-002: feedback & bug report screen
+                composable(Routes.FEEDBACK) { FeedbackScreen(onBack = { nav.popBackStack() }) } }
                 composable(Routes.PRIVACY_AND_DEVICES) { PrivacyAndDevicesScreen(onBack = { nav.popBackStack() }) }
                 composable(Routes.CLIENT_LIST) {
                     ClientListScreen(

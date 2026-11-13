@@ -202,3 +202,12 @@ data class NotificationEntity(
     val at: Long,
     val read: Boolean
 )
+
+// CR-002: locally stored feedback / bug report
+@Entity(tableName = "feedback_reports")
+data class FeedbackEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val type: String,
+    val message: String,
+    val createdAt: Long,
+)

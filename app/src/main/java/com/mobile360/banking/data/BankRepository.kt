@@ -79,6 +79,11 @@ interface BankRepository {
     fun trades(): Flow<List<TradeEntity>>
 
     suspend fun audit(type: String, detail: String)
+
+    // CR-002
+    fun feedbackReports(): Flow<List<FeedbackEntity>>
+
+    suspend fun submitFeedback(type: String, message: String)
 }
 
 class RoomBankRepository(private val dao: BankDao) : BankRepository {
@@ -243,5 +248,13 @@ class RoomBankRepository(private val dao: BankDao) : BankRepository {
 
     override suspend fun audit(type: String, detail: String) {
         dao.insertAudit(AuditEventEntity(type = type, detail = detail, at = System.currentTimeMillis()))
+    }
+
+    // CR-002
+    override fun feedbackReports(): Flow<List<FeedbackEntity>> = dao.feedback()
+
+    override suspend fun submitFeedback(type: String, message: String) {
+        dao.insertFeedback(FeedbackEntity(type = type, message = message, createdAt = System.currentTimeMillis()))
+        audit("FEEDBACK_SUBMITTED", type)
     }
 }
