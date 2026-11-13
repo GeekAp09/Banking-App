@@ -1,0 +1,20 @@
+appId: com.mobile360.banking
+---
+# CR-010: step progress on the Pay flow
+- launchApp
+- tapOn: "Use PIN or code instead"
+- tapOn: "Enter the 6-digit demo code"
+- inputText: "123456"
+- tapOn: "Verify"
+- tapOn: "Pay"
+- assertVisible: "Step 1 of 3"
+- tapOn: "Enter recipient manually"
+- assertVisible: "Step 2 of 3"
+- tapOn: "Verify and send"
+- assertVisible: "Enter the recipient's name."
+- assertVisible: "Step 2 of 3"
+- assertNotVisible: "Step 3 of 3"
+- back
+- assertVisible: "Step 1 of 3"
+- assertNotVisible: "Step 2 of 3"
+- assertNotVisible: "Enter the recipient's name."

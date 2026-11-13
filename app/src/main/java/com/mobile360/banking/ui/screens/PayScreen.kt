@@ -99,6 +99,8 @@ fun PayScreen(
             }
             Text("Pay", fontSize = 24.sp, fontWeight = FontWeight.SemiBold, color = AppColors.primary)
         }
+        // CR-010: step progress
+        com.mobile360.banking.ui.components.StepProgress(1, 3)
         Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Surface(shape = RoundedCornerShape(12.dp), color = Color.White, border = BorderStroke(1.dp, AppColors.brandBorder.copy(alpha = 0.3f))) {
                 Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.Top) {

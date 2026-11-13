@@ -61,6 +61,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mobile360.banking.navigation.Routes
 import com.mobile360.banking.ui.theme.AppColors
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 /** Top bar with optional back arrow and trailing actions (48dp touch targets). */
 @Composable
@@ -373,5 +375,24 @@ fun EmptyState(title: String, message: String, modifier: Modifier = Modifier, ic
         Icon(icon, contentDescription = null, tint = AppColors.labelMuted, modifier = Modifier.size(40.dp))
         Text(title, style = MaterialTheme.typography.titleMedium, color = AppColors.inkDark, textAlign = TextAlign.Center)
         Text(message, style = MaterialTheme.typography.bodySmall, color = AppColors.labelMuted, textAlign = TextAlign.Center)
+    }
+}
+
+// CR-010: "Step N of total" label with a linear progress bar
+@androidx.compose.runtime.Composable
+fun StepProgress(current: Int, total: Int, modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier) {
+    val label = "Step $current of $total"
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .semantics(mergeDescendants = true) { contentDescription = label },
+    ) {
+        androidx.compose.material3.Text(label, style = androidx.compose.material3.MaterialTheme.typography.labelLarge)
+        Spacer(Modifier.size(4.dp))
+        androidx.compose.material3.LinearProgressIndicator(
+            progress = { current.coerceIn(0, total).toFloat() / total },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }

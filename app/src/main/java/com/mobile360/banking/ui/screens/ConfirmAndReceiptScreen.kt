@@ -100,6 +100,8 @@ fun ConfirmAndReceiptScreen(
                 Icon(Icons.Filled.HelpOutline, contentDescription = "Support or Help", tint = Variant)
             }
         }
+        // CR-010: step progress
+        com.mobile360.banking.ui.components.StepProgress(s.step, 3)
         when {
             s.loading -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
             s.notFound -> Column(Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {

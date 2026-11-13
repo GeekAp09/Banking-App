@@ -33,6 +33,9 @@ data class ConfirmUiState(
     val overPerTransfer get() = amountCents > Limits.PER_TRANSFER_CENTS
     val initials get() = name.split(" ").mapNotNull { it.firstOrNull() }.take(2).joinToString("").ifBlank { "?" }
     val masked get() = phone.filter { it.isDigit() }.takeLast(4).let { if (it.isEmpty()) "" else "•••• $it" }
+
+    // CR-010: step 3 is the receipt, step 2 the editable confirmation
+    val step: Int get() = if (receipt != null) 3 else 2
 }
 
 fun parseCents(text: String): Long = try {
