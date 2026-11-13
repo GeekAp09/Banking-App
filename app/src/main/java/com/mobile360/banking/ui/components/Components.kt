@@ -381,7 +381,7 @@ fun EmptyState(title: String, message: String, modifier: Modifier = Modifier, ic
 // CR-010: "Step N of total" label with a linear progress bar
 @androidx.compose.runtime.Composable
 fun StepProgress(current: Int, total: Int, modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier) {
-    val label = "Step $current of $total"
+    val label = stepProgressLabel(current, total)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -396,3 +396,6 @@ fun StepProgress(current: Int, total: Int, modifier: androidx.compose.ui.Modifie
         )
     }
 }
+
+/** CR-010: label shown by [StepProgress]. */
+fun stepProgressLabel(current: Int, total: Int): String = "Step $current of $total"
